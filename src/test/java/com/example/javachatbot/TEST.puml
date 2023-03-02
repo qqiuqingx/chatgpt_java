@@ -1,0 +1,42 @@
+@startuml
+
+
+class 故事{
+     Epic Link:String,
+     预估时间:Int,
+     Sprint:String,
+     UI验收状态:String
+     UE验收状态:String
+}
+
+ class Epic{
+    iOS初步评估:String
+    Android测试预估:String
+    iOS测试预估:String
+    数据统计需求:String
+    UI状态:String
+    经办人:String
+    报告人:String
+}
+
+class 子任务 {
+    经办人:String ,
+    报告人:String,
+    预估时间:Int,
+    产品验收状态:String,
+    Sprint:String
+}
+class Sprint {
+
+}
+
+
+
+
+子任务::预估时间  o-- 故事::预估时间
+子任务::Sprint -- 故事::Sprint :页面带入
+
+Epic  -->  故事
+故事   --> 子任务
+Sprint --> 故事
+@enduml

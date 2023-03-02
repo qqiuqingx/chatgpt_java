@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>GPT API</title>
+    <style>
+        .chat-box {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow-y: auto;
+            height: 800px;
+        }
+
+        .send-message {
+            display: flex;
+            justify-content: center;
+
+
+        }
+
+        .message-box {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            padding: 10px;
+            margin-bottom: 5px;
+            max-width: 80%;
+        }
+
+        .message-box.other {
+            background-color: #eee;
+            float: left;
+        }
+
+        .message-box.user {
+            background-color: #79c6f9;
+            color: #fff;
+            float: right;
+        }
+    </style>
+</head>
+
+
+<body>
+<div class="chat-box"></div>
+<div class="send-message">
+    <input style="max-height: 200px; height: 24px; overflow-y: hidden;width: 500px;" type="text" id="message" placeholder="Type a message...">
+    <button onclick="executeGetAjax()">Send</button>
+</div>
+
+
+</body>
+
+
+<script th:src="@{//cdn.bootcss.com/jquery/2.2.3/jquery.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
+<script type="text/javascript">
+    function addMessage(message,role) {
+
+        var chatBox = document.querySelector(".chat-box");
+        // 创建一个新的消息元素
+        var newMessage = document.createElement("div");
+        // 添加消息样式类别
+        newMessage.classList.add("message-box");
+        newMessage.classList.add(role)
+        var converter = new showdown.Converter();
+        var html = converter.makeHtml(message);
+
+        // 设置消息内容
+        newMessage.innerHTML =html;
+        // 添加新消息到对话框中
+        chatBox.appendChild(newMessage);
+    }
+
+    function executeGetAjax() {
+
+        <!--  data中传递json对象  -->
+        var message=document.getElementById("message").value;
+        console.log(message,"message")
+        if (message===null||message===''){
+            console.log("退出")
+            return
+        }
+
+        addMessage(message,"user")
+
+        document.getElementById("message").value=""
+        $.ajax({
+            url:  "/ask",
+            type: 'post',
+            async: true,
+            data:{ask:message},
+            dataType: 'text',
+            success: function (data) {
+                let parse = JSON.parse(data);
+                addMessage(parse.content,parse.role)
+
+              //  getPar()
+            },
+            error: function (err) {
+              alert("服务端错误,请重试")
+            }
+
+        })
+
+    }
+    function getPar() {
+       var elements= document.getElementsByClassName("message-box");
+        for (var i = 0; i < elements.length; i++) {
+            console.log("chat-box包含：")
+            console.log( elements[i].textContent+",className:"+   elements[i].className)
+
+            if (elements[i].className.includes("user")){
+
+            }
+        }
+    }
+    $(document).ready(function () {
+        console.log("123321")
+        $.ajax({
+            url:  "/getAll",
+            type: 'get',
+            async: true,
+            dataType: 'text',
+            success: function (data) {
+
+                if (data != null && data !== ''){
+                let parse = JSON.parse(data);
+                for (var i = 0; i < parse.length; i++) {
+                    addMessage(parse[i].content,parse[i].role)
+                }
+                }
+
+            },
+            error: function (err) {
+                alert("服务端错误,请重试")
+            }
+
+        })
+    })
+
+</script>
+</html>

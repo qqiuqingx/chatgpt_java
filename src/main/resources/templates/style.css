@@ -1,0 +1,135 @@
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+}
+
+nav ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+}
+
+nav li {
+    margin-right: 20px;
+}
+
+nav li:last-child {
+    margin-right: 0;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+}
+
+main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 50px;
+}
+
+section {
+    margin-bottom: 50px;
+}
+
+h1, h2, h3 {
+    margin-top: 0;
+}
+
+ul {
+    list-style: disc;
+    margin-left: 20px;
+}
+
+/* Team Section Styles */
+
+.team-member {
+    display: inline-block;
+    vertical-align: text-top;
+    margin-right: 20px;
+    text-align: center;
+}
+
+.team-member img {
+    max-width: 200px;
+    height: auto;
+    border-radius: 50%;
+}
+
+.team-member h3 {
+    margin: 10px 0 0;
+}
+
+.team-member p {
+    margin: 5px 0;
+}
+
+/* Contact Form Styles */
+
+form {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+form label {
+    flex-basis: 100%;
+    margin-bottom: 5px;
+}
+
+form input, form textarea {
+    flex-basis: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: none;
+    border-radius: 3px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+form input[type=submit] {
+    background-color: #333;
+    color: #fff;
+    cursor: pointer;
+}
+
+form input[type=submit]:hover {
+    background-color: #666;
+}
+
+/* Media Queries */
+
+@media screen and (max-width: 768px) {
+    header {
+        text-align: center;
+    }
+
+    nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    nav li {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    main {
+        padding: 30px;
+    }
+
+    .team-member {
+        display: block;
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+}
