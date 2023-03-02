@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-public class testController {
+public class askController {
     @Autowired
     CacheUtils cache;
     @Autowired
@@ -41,8 +41,8 @@ public class testController {
             return  new GptEntity("请稍候。。。",UserCode.ASSISTANT.getRole());
         }
 
-        List<GptEntity> gptEntities = cache.putCache(s, new GptEntity(ask, UserCode.USER.getRole()));
-        gptEntities.forEach(System.out::println);
+         cache.putCache(s, new GptEntity(ask, UserCode.USER.getRole()));
+
         List<GptEntity> test = cache.GptSessionCache(s);
         GPTRequestBody require = new GPTRequestBody(test );
         String message = httpClientTemplate.sendPostRequest(URL, require, s);
