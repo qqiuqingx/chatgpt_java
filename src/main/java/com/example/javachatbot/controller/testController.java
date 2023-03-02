@@ -40,14 +40,13 @@ public class testController {
         if (!StringUtils.hasText(s)||!StringUtils.hasText(ask)){
             return  new GptEntity("请稍候。。。",UserCode.ASSISTANT.getRole());
         }
-        System.out.println("you: ");
+
         List<GptEntity> gptEntities = cache.putCache(s, new GptEntity(ask, UserCode.USER.getRole()));
         gptEntities.forEach(System.out::println);
         List<GptEntity> test = cache.GptSessionCache(s);
         GPTRequestBody require = new GPTRequestBody(test );
         String message = httpClientTemplate.sendPostRequest(URL, require, s);
-        System.out.println("response: ");
-        System.out.println(message);
+
         return  new GptEntity(message,UserCode.ASSISTANT.getRole());
     }
 

@@ -77,77 +77,50 @@ public class HttpClientTemplate {
 
 
 
-    public  String sendGetRequest(String url) throws IOException {
 
+    public  String sendPostRequest(String url, GPTRequestBody require,String cacheKey) throws IOException {
 
-
-
+//        GptEntity message=new GptEntity("test1", UserCode.ASSISTANT.getRole());
+//        cache.putCache(cacheKey,message);
+//        return message.getContent();
         HttpClientBuilder builder = HttpClientBuilder.create();
-        builder.setDefaultRequestConfig(config);
+        if (config != null){
+            builder.setDefaultRequestConfig(config);
+        }
+
 
         CloseableHttpClient httpClient = builder.build();
+        HttpPost httpPost = new HttpPost(url);
 
-        HttpGet httpGet = new HttpGet(url);
-
-        CloseableHttpResponse response = httpClient.execute(httpGet);
-
+        // 添加请求头参数
+        List<Header> headers = new ArrayList<Header>();
+        headers.add(new BasicHeader("Content-Type", "application/json"));
+        headers.add(new BasicHeader("Authorization", "Bearer "+Config.API_KEY));
+        httpPost.setHeaders(headers.toArray(new Header[0]));
+        ObjectMapper mapper = new ObjectMapper();
+        String requestBodyJson = mapper.writeValueAsString(require);
+        // 将JSON字符串设置为请求体
+        StringEntity requestEntity = new StringEntity(requestBodyJson, ContentType.APPLICATION_JSON);
+        httpPost.setEntity(requestEntity);
+        CloseableHttpResponse response = httpClient.execute(httpPost);
         try {
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                return EntityUtils.toString(entity, StandardCharsets.UTF_8);
+            int statusCode = response.getStatusLine().getStatusCode();
+            HttpEntity responseEntity = response.getEntity();
+            String jsonString=   EntityUtils.toString(responseEntity, StandardCharsets.UTF_8);
+
+            if (statusCode == 200) {
+                TextCompletionResponse textCompletionResponse = mapper.readValue(jsonString, TextCompletionResponse.class);
+                GptEntity message = textCompletionResponse.getChoices().get(0).getMessage();
+                cache.putCache(cacheKey,message);
+                return message.getContent();
+            }else {
+                ErrorResponse errorResponse = mapper.readValue(jsonString, ErrorResponse.class);
+                return errorResponse.getError().getMessage();
             }
         } finally {
             response.close();
             httpClient.close();
         }
-
-        return null;
-    }
-
-    public  String sendPostRequest(String url, GPTRequestBody require,String cacheKey) throws IOException {
-
-        GptEntity message=new GptEntity("test1", UserCode.ASSISTANT.getRole());
-        cache.putCache(cacheKey,message);
-        return message.getContent();
-//        HttpClientBuilder builder = HttpClientBuilder.create();
-//        if (config != null){
-//            System.out.println("加载");
-//            builder.setDefaultRequestConfig(config);
-//        }
-//
-//
-//        CloseableHttpClient httpClient = builder.build();
-//        HttpPost httpPost = new HttpPost(url);
-//
-//        // 添加请求头参数
-//        List<Header> headers = new ArrayList<Header>();
-//        headers.add(new BasicHeader("Content-Type", "application/json"));
-//        headers.add(new BasicHeader("Authorization", "Bearer "+Config.API_KEY));
-//        httpPost.setHeaders(headers.toArray(new Header[0]));
-//        ObjectMapper mapper = new ObjectMapper();
-//        String requestBodyJson = mapper.writeValueAsString(require);
-//        // 将JSON字符串设置为请求体
-//        StringEntity requestEntity = new StringEntity(requestBodyJson, ContentType.APPLICATION_JSON);
-//        httpPost.setEntity(requestEntity);
-//        CloseableHttpResponse response = httpClient.execute(httpPost);
-//        try {
-//            int statusCode = response.getStatusLine().getStatusCode();
-//            HttpEntity responseEntity = response.getEntity();
-//            String jsonString=   EntityUtils.toString(responseEntity, StandardCharsets.UTF_8);
-//
-//            if (statusCode == 200) {
-//                TextCompletionResponse textCompletionResponse = mapper.readValue(jsonString, TextCompletionResponse.class);
-//                GptEntity message = textCompletionResponse.getChoices().get(0).getMessage();
-//                cache.putCache(cacheKey,message);
-//                return message.getContent();
-//            }else {
-//                ErrorResponse errorResponse = mapper.readValue(jsonString, ErrorResponse.class);
-//                return errorResponse.getError().getMessage();
-//            }
-//        } finally {
-//            response.close();
-//            httpClient.close();
-//        }
 
     }
 }
