@@ -1,6 +1,7 @@
 package com.example.javachatbot.utils;
 
 import com.example.javachatbot.model.GptEntity;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -32,5 +33,9 @@ public class CacheUtils {
     public  List<GptEntity> GptSessionCache(String key){
         return map.get(key);
     }
+    @CacheEvict(value = "GptSessionCache",key = "#key")
+    public  void clearCache(String key){
 
+        map.remove(key);
+    }
 }

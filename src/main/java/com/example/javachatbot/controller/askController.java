@@ -68,5 +68,17 @@ public class askController {
         return  cache.GptSessionCache(s);
     }
 
+    @RequestMapping(value = "/clear", method = RequestMethod.GET)
+    @ResponseBody
+    public  void  clear(HttpServletRequest request)   {
 
+        String s = httpClientTemplate.ipAddress(request);
+        System.out.println("ip:"+s);
+        if (!StringUtils.hasText(s)){
+            return  ;
+        }
+
+        cache.clearCache(s);
+
+    }
 }

@@ -47,6 +47,7 @@
 <div class="send-message">
     <input style="max-height: 200px; height: 24px; overflow-y: hidden;width: 500px;" type="text" id="message" placeholder="Type a message...">
     <button onclick="executeGetAjax()">Send</button>
+    <button onclick="clearcache()">重置</button>
 </div>
 
 
@@ -56,6 +57,31 @@
 <script th:src="@{//cdn.bootcss.com/jquery/2.2.3/jquery.min.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
 <script type="text/javascript">
+
+    function clearcache() {
+        console.log("进入clear")
+        $.ajax({
+            url:  "/clear",
+            type: 'get',
+            async: true,
+            dataType: 'text',
+            success: function (data) {
+                var chatBox = document.querySelector(".chat-box");
+                let lastElementChild = chatBox.lastElementChild;
+                while(lastElementChild){
+                    chatBox.removeChild(lastElementChild)
+                    lastElementChild= chatBox.lastElementChild
+                }
+
+
+            },
+            error: function (err) {
+                alert("服务端错误,请重试")
+            }
+
+        })
+    }
+
     function addMessage(message,role) {
 
         var chatBox = document.querySelector(".chat-box");
@@ -96,26 +122,16 @@
                 let parse = JSON.parse(data);
                 addMessage(parse.content,parse.role)
 
-              //  getPar()
+                //  getPar()
             },
             error: function (err) {
-              alert("服务端错误,请重试")
+                alert("服务端错误,请重试")
             }
 
         })
 
     }
-    function getPar() {
-       var elements= document.getElementsByClassName("message-box");
-        for (var i = 0; i < elements.length; i++) {
-            console.log("chat-box包含：")
-            console.log( elements[i].textContent+",className:"+   elements[i].className)
 
-            if (elements[i].className.includes("user")){
-
-            }
-        }
-    }
     $(document).ready(function () {
         console.log("123321")
         $.ajax({
@@ -126,10 +142,10 @@
             success: function (data) {
 
                 if (data != null && data !== ''){
-                let parse = JSON.parse(data);
-                for (var i = 0; i < parse.length; i++) {
-                    addMessage(parse[i].content,parse[i].role)
-                }
+                    let parse = JSON.parse(data);
+                    for (var i = 0; i < parse.length; i++) {
+                        addMessage(parse[i].content,parse[i].role)
+                    }
                 }
 
             },
