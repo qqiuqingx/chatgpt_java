@@ -14,7 +14,7 @@ import java.util.Map;
 @Component
 //todo  缓存TTL的实现
 public class CacheUtils {
-   private static Map<String,List<GptEntity>> map=new HashMap();
+    private static Map<String,List<GptEntity>> map=new HashMap();
 
     @CachePut(value = "GptSessionCache",key = "#key")
     public List<GptEntity> putCache(String key,GptEntity gpt){
